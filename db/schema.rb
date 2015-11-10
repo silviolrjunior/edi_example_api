@@ -11,13 +11,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151108120642) do
+ActiveRecord::Schema.define(version: 20151110101035) do
 
   create_table "posts", force: :cascade do |t|
     t.string   "title"
     t.string   "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.text     "description"
+    t.decimal  "value"
+    t.integer  "shipment_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "products", ["shipment_id"], name: "index_products_on_shipment_id"
+
+  create_table "shipments", force: :cascade do |t|
+    t.date     "delivery_date"
+    t.integer  "storage_number"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.integer  "storage_id"
+  end
+
+  add_index "shipments", ["storage_id"], name: "index_shipments_on_storage_id"
+
+  create_table "storages", force: :cascade do |t|
+    t.string   "number"
+    t.string   "address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "rule"
   end
 
 end
