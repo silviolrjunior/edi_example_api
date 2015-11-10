@@ -4,6 +4,9 @@ class XmlsController < ApplicationController
     @total_value = 0
     hash = Hash.from_xml(request.body)
     shipment = hash["Shipment"]
+    id = shipment['id']
+    save_xml("#{Rails.root}/requests/shipment_#{id}.xml", hash["Shipment"].to_xml(root: Shipment))
+
     products = shipment.delete("products")
     build_shipment(shipment)
     build_products(products)
@@ -20,6 +23,12 @@ class XmlsController < ApplicationController
     @shipment.storage_number = @storage.id
     @shipment.storage = @storage
     @shipment.save
+
+
+    xml = @storage.to_xml(root: Storage)
+
+    save_xml("#{Rails.root}/requests/storage_#{id}_#{@shipment.storage_number}.xml", xml)
+
     render xml: @storage, root: "storage"
   end
 
@@ -43,5 +52,9 @@ class XmlsController < ApplicationController
       @total_value += product["value"].to_f
       Product.create(product)
     end
+  end
+
+  def save_xml(path, xml)
+    File.open(path, 'w') { |file| file.write(xml) }
   end
 end
